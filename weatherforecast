@@ -1,0 +1,51 @@
+import requests
+
+API_KEY = 'REST_GET_API_KEY'
+BASE_URL = "https://samples.openweathermap.org/data/2.5/forecast/hourly?q=London,us&appid=" + API_KEY
+
+def get_weather_data():
+    response = requests.get(BASE_URL)
+    if response.status_code == 200:
+        return response.json()["list"]
+    else:
+        print("Error fetching weather data.")
+        return []
+
+def get_option_from_user():
+    print("Select an option:")
+    print("1. Get weather")
+    print("2. Get Wind Speed")
+    print("3. Get Pressure")
+    print("0. Exit")
+    
+    option = input("Enter your choice: ")
+    return option
+
+def get_data_by_option(option, data, target_key):
+    date = input("Enter the date (YYYY-MM-DD HH:MM:SS): ")
+    for entry in data:
+        if entry["dt_txt"] == date:
+            print(f"{target_key} on {date}: {entry['main'][target_key]}")
+            return
+    print("Data not found for the given date.")
+
+def main():
+    weather_data = get_weather_data()
+    
+    while True:
+        option = get_option_from_user()
+        
+        if option == "0":
+            print("Exiting the program.")
+            break
+        elif option == "1":
+            get_data_by_option(option, weather_data, "temp")
+        elif option == "2":
+            get_data_by_option(option, weather_data, "wind_speed")
+        elif option == "3":
+            get_data_by_option(option, weather_data, "pressure")
+        else:
+            print("Invalid option. Please select again.")
+
+if __name__ == "__main__":
+    main()
